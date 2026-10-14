@@ -1,12 +1,20 @@
+from collections import deque
+
 labirinto = [
-    "I.#.",
-    ".##.",
-    "....",
-    "#.#F",
+    "I..##....#.",
+    ".#.##.#....",
+    ".#......#..",
+    "...........",
+    ".....#....#",
+    "..#....##..",
+    ".....#.F...",
+    ".........#.",
+    ".#.......#.",
+    ".....#.....",
+    ".....#....."
 ]
 
 DIRECOES = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # ↑ → ↓ ←
-
 
 def achar(lab, simbolo):
     for i, linha in enumerate(lab):
@@ -48,6 +56,30 @@ def desenhar(lab, caminho):
     for linha in grade:
         print(''.join(linha))
 
+def bfs (grafo, inicio, saida):
+    fila = deque([inicio])
+    visitados = {inicio: None}
+
+    while fila:
+        atual = fila.popleft()
+
+        if atual == saida:
+            break
+
+        for vizinho in grafo[atual]:
+            if vizinho not in visitados:
+                visitados[vizinho] = atual
+                fila.append(vizinho)
+
+    caminho = []
+    passo = saida
+
+    while passo is not None:
+        caminho.append(passo)
+        passo = visitados[passo]
+
+    return caminho[::-1]  # Retorna o caminho invertido
+
 
 def main():
     inicio = achar(labirinto, 'I')
@@ -58,10 +90,10 @@ def main():
     print(f"Saida: {saida}")
     print("\nGrafo montado:", grafo)
 
-    caminho = [
-        (0, 0), (1, 0), (2, 0), (2, 1),
-        (2, 2), (2, 3), (3, 3)
-    ]
+    caminho = bfs(grafo, inicio, saida)
+
+    print("\nCaminho encontrado:")
+    print(caminho)
 
     print("\nLabirinto com caminho:")
     desenhar(labirinto, caminho)
