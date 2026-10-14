@@ -59,9 +59,11 @@ def desenhar(lab, caminho):
 def bfs (grafo, inicio, saida):
     fila = deque([inicio])
     visitados = {inicio: None}
+    explorados = []
 
     while fila:
         atual = fila.popleft()
+        explorados.append(atual)
 
         if atual == saida:
             break
@@ -71,6 +73,9 @@ def bfs (grafo, inicio, saida):
                 visitados[vizinho] = atual
                 fila.append(vizinho)
 
+    if saida not in visitados:
+        return None, explorados
+
     caminho = []
     passo = saida
 
@@ -78,7 +83,7 @@ def bfs (grafo, inicio, saida):
         caminho.append(passo)
         passo = visitados[passo]
 
-    return caminho[::-1]  # Retorna o caminho invertido
+    return caminho[::-1], explorados
 
 
 def main():
@@ -90,7 +95,13 @@ def main():
     print(f"Saida: {saida}")
     print("\nGrafo montado:", grafo)
 
-    caminho = bfs(grafo, inicio, saida)
+    caminho, explorados = bfs(grafo, inicio, saida)
+
+    print(f'Casas exploradas: {len(explorados)}')
+
+    if caminho is None:
+        print('Nao existe caminho ate a saida.')
+        return
 
     print("\nCaminho encontrado:")
     print(caminho)
